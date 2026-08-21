@@ -86,8 +86,11 @@ def lint(text):
             findings.append({"id": pid, "name": name, "count": len(hits),
                              "allow": allow, "over": over, "penalty": round(pen, 1),
                              "hits": hits})
+    # 어미 통일은 단독 증거가 아니라 정황 증거다. 격식 문서의 합니다체 통일은
+    # 관례이므로, 다른 패턴이 허용치를 넘었을 때만 가산한다.
+    has_over = any(f["over"] for f in findings)
     uni, n = ending_uniformity(text)
-    if uni is not None and uni > 0.92:
+    if has_over and uni is not None and uni > 0.92:
         penalty += 3.0
         findings.append({"id": "D4", "name": f"어미 통일 결벽 ({uni:.0%}, {n}문장)",
                          "count": 1, "allow": 0, "over": 1, "penalty": 3.0, "hits": []})
