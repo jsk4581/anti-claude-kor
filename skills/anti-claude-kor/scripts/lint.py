@@ -103,6 +103,10 @@ PATTERNS = [
          rx=re.compile(r"기능(?:합니다|하는|해요|한다)(?![가-힣])|구실을\s?(?:합니다|하는|한다)|"
                        r"(?:으로|로)\s?작용(?:합니다|하는|해요|한다)(?![가-힣])"),
          weight=1.0, allow=2, tier="core", since="2026-09"),
+    dict(id="C8", name="추상 한자어·용어 남발 (층위/정체/지문/결벽/낙차/프레이밍)",
+         rx=re.compile(r"층위|정체(?=[가는를은])|지문(?=[이가을은])|결벽|무결성|낙차|프레이밍|담론|함의|정합성|"
+                       r"위상(?=[이가을은])|서사(?=[가를로는])|장치(?=[를가다])|메커니즘|패러다임"),
+         weight=0.7, allow=3, tier="core", since="2026-09"),
     # D군: 담화
     dict(id="D5", name="맺음말 상투구 (결론적으로 / 종합하면 / 정리하자면 / 요약하면)",
          rx=re.compile(r"결론적으로|종합하면|종합하자면|정리하자면|정리하면|요약하면|요약하자면|요컨대"),
@@ -156,6 +160,11 @@ def comma_ratio(sents):
     if len(sents) < 8:
         return None
     return sum("," in s for s in sents) / len(sents)
+
+
+def long_sentences(sents, limit=35):
+    """어절 수가 limit 이상인 문장 수. 한국어 산문은 대개 15~20어절이다."""
+    return sum(len(s.split()) >= limit for s in sents)
 
 
 LIST_LINE = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s+\S")
@@ -246,6 +255,10 @@ def lint(text):
     if cr is not None and cr > 0.55:
         findings.append(dict(id="D6", name=f"쉼표 문장 비율 과다 ({cr:.0%}, {len(sents)}문장)", tier="circ",
                              since="2026-09", count=1, allow=0, over=1, penalty=2.0, hits=[]))
+    ls = long_sentences(sents)
+    if ls >= 2:
+        findings.append(dict(id="D7", name=f"긴 문장 (35어절 이상 {ls}개)", tier="circ",
+                             since="2026-09", count=ls, allow=1, over=ls - 1, penalty=round((ls - 1) * 1.0, 1), hits=[]))
     # 정황 등급은 core 초과가 있을 때만 가산
     has_core_over = any(f["over"] and f["tier"] == "core" for f in findings)
     penalty = 0.0

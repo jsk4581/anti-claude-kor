@@ -7,7 +7,7 @@
       "name": "anti-claude-kor",
       "source": "./",
       "description": "클로드가 쓴 한국어의 AI 티를 찾아내고 걷어내는 정제 스킬과 저장 훅",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "license": "MIT",
       "repository": "https://github.com/jsk4581/anti-claude-kor",
       "keywords": ["korean", "writing", "slop", "claude", "proofreading"]
