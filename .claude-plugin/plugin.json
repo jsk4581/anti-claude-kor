@@ -1,0 +1,11 @@
+{
+  "name": "anti-claude-kor",
+  "displayName": "anti-claude-kor",
+  "version": "0.2.0",
+  "description": "클로드가 쓴 한국어의 AI 티를 찾아내고 걷어내는 정제 스킬과 저장 훅",
+  "author": { "name": "jsk4581", "url": "https://github.com/jsk4581" },
+  "repository": "https://github.com/jsk4581/anti-claude-kor",
+  "license": "MIT",
+  "keywords": ["korean", "writing", "slop", "claude", "proofreading"],
+  "hooks": "./hooks/hooks.json"
+}
